@@ -3,6 +3,7 @@
     type="dark"
     variant="dark"
     class="d-flex justify-content-between px-4"
+    fixed="top"
   >
     <b-navbar-brand class="text-white" href="/">AppPedidos</b-navbar-brand>
 
@@ -83,8 +84,9 @@ export default {
     onConfirmBuyout() {
       delete this.cart.__ob__;
       console.table(this.cart);
+      const total = this.$options.filters.clp(this.getTotal);
       this.open = false;
-      this.$emit("confirm", this.getTotal);
+      this.$emit("complete", total);
     },
   },
   computed: {

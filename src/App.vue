@@ -1,16 +1,7 @@
 <template>
   <div id="app">
-    <nav-bar :cart="cart" @confirm.once="onConfirmBuyout" />
-    <b-alert
-      :show="dismissCountDown"
-      dismissible
-      fade
-      variant="success"
-      @dismiss-count-down="countDownChanged"
-    >
-      This alert will dismiss after {{ dismissCountDown }} seconds...
-    </b-alert>
-    <div class="d-flex flex-wrap justify-content-center p-5">
+    <nav-bar :cart="cart" @complete="onCompleteBuyout" />
+    <div class="d-flex flex-wrap justify-content-center p-5 my-5">
       <products-card
         class="m-2"
         v-for="item in products"
@@ -45,7 +36,6 @@ export default {
   },
   methods: {
     onAddCart(value) {
-      console.log(value);
       this.products = this.products.map((p) =>
         p.id === value.id ? { ...p, available: p.available - value.qty } : p
       );
@@ -61,16 +51,16 @@ export default {
         );
       else this.cart.push({ ...value, total: value.qty * value.price });
     },
-    countDownChanged(dismissCountDown) {
-      this.dismissCountDown = dismissCountDown;
-    },
-    showAlert() {
-      this.dismissCountDown = this.dismissSecs;
-    },
-    onConfirmBuyout(total) {
+    onCompleteBuyout(total) {
+      const content = `Su compra por el monto de $${total} se completo con exito`;
       this.cart = [];
-      this.contentAlert = `Se genero la compra existosa por el valor de : $${total}. \nMuchas gracias. `;
-      this.showAlert();
+      this.$bvToast.toast(content, {
+        title: "Compra Exitosa",
+        variant: "success",
+        autoHideDelay: 2000,
+        appendToast: true,
+        solid: true,
+      });
     },
   },
 };

@@ -92,7 +92,7 @@ export default {
   filters: {
     clp: (value) => {
       return new Intl.NumberFormat("es-CL", {
-        maximumSignificantDigits: 3,
+        maximumSignificantDigits: 5,
       }).format(value);
     },
   },
