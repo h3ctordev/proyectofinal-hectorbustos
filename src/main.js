@@ -1,7 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
 import "bootstrap";
-// import BootstrapVue from "bootstrap-vue";
 import { BootstrapVueIcons, BootstrapVue } from "bootstrap-vue";
 
 import "bootstrap/dist/css/bootstrap.css";

@@ -1,7 +1,16 @@
 <template>
   <div id="app">
-    <nav-bar :cart="cart"></nav-bar>
-    <div class="d-flex flex-wrap justify-content-start p-5">
+    <nav-bar :cart="cart" @confirm.once="onConfirmBuyout" />
+    <b-alert
+      :show="dismissCountDown"
+      dismissible
+      fade
+      variant="success"
+      @dismiss-count-down="countDownChanged"
+    >
+      This alert will dismiss after {{ dismissCountDown }} seconds...
+    </b-alert>
+    <div class="d-flex flex-wrap justify-content-center p-5">
       <products-card
         class="m-2"
         v-for="item in products"
@@ -30,6 +39,8 @@ export default {
     return {
       products: [...mockProducts],
       cart: [],
+      dismissCountDown: 0,
+      dismissSecs: 10,
     };
   },
   methods: {
@@ -40,10 +51,26 @@ export default {
       );
       if (this.cart.find((p) => p.id === value.id))
         this.cart = this.cart.map((p) =>
-          p.id === value.id ? { ...p, qty: p.qty + value.qty } : { ...p }
+          p.id === value.id
+            ? {
+                ...p,
+                qty: p.qty + value.qty,
+                total: p.qty + value.qty * value.price,
+              }
+            : { ...p }
         );
-      else this.cart.push({ ...value });
-      console.log(this.cart);
+      else this.cart.push({ ...value, total: value.qty * value.price });
+    },
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+    },
+    showAlert() {
+      this.dismissCountDown = this.dismissSecs;
+    },
+    onConfirmBuyout(total) {
+      this.cart = [];
+      this.contentAlert = `Se genero la compra existosa por el valor de : $${total}. \nMuchas gracias. `;
+      this.showAlert();
     },
   },
 };
