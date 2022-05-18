@@ -1,4 +1,4 @@
-# Proyecto final - Hector Bustos   
+# Proyecto final - Héctor Bustos  Comisión 35950 
 
 ## Primera entrega
 
