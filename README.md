@@ -1,24 +1,8 @@
-# Proyecto final - Héctor Bustos  Comisión 35950 
+# Proyecto final - Héctor Bustos Comisión 35950
 
-## Primera entrega
+## Entrgas
 
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
+- [x] Primera entrega **Entregado el 22/05** [tag v0.1](https://github.com/h3ctordev/proyectofinal-hectorbustos/)
+- [ ] Segunda entrega
+- [ ] Tercera entrega
+- [ ] Entrega Final
