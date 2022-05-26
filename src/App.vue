@@ -2,19 +2,15 @@
   <div id="app">
     <nav-bar :cart="cart" @complete="onCompleteBuyout" />
     <div class="d-flex flex-wrap justify-content-center p-5 my-5">
-      <products-card
-        class="m-2"
-        v-for="item in products"
-        :key="item.id"
-        :product="item"
-        @add-cart="onAddCart"
-      />
+      <div v-for="item in products" :key="item.id">
+        <product-card class="m-2" :product="item" @add-cart="onAddCart" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import ProductsCard from "@/components/ProductCard";
+import ProductCard from "@/components/ProductCard";
 import NavBar from "@/components/NavBar";
 
 // mock productos
@@ -23,7 +19,7 @@ import mockProducts from "./db/products.json";
 export default {
   name: "App",
   components: {
-    ProductsCard,
+    ProductCard,
     NavBar,
   },
   data() {
