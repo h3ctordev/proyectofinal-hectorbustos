@@ -4,6 +4,7 @@
     "img": "https://cdn.create.vista.com/api/media/medium/88326858/stock-photo-glass-jar-with-metal-lid?token=",
     "name": "Producto 1",
     "price": 7890,
+    "description": "Dolorum aliquip adipisicing sodales, quas varius, proin venenatis ligula. Voluptatem adipiscing, venenatis aliquet ea iste occaecati facilis eum netus sollicitudin.",
     "available": 10
   },
   {
@@ -11,6 +12,7 @@
     "img": "https://cdn.create.vista.com/api/media/small/447850096/stock-photo-rendering-transparent-plastic-pills-jars",
     "name": "Producto 2",
     "price": 999,
+    "description": "Dolorum aliquip adipisicing sodales, quas varius, proin venenatis ligula. Voluptatem adipiscing, venenatis aliquet ea iste occaecati facilis eum netus sollicitudin.",
     "available": 20
   },
   {
@@ -18,6 +20,7 @@
     "img": "https://cdn.create.vista.com/api/media/medium/130725702/stock-photo-cosmetic-or-medical-packaging-template?token=",
     "name": "Producto 3",
     "price": 1421,
+    "description": "Dolorum aliquip adipisicing sodales, quas varius, proin venenatis ligula. Voluptatem adipiscing, venenatis aliquet ea iste occaecati facilis eum netus sollicitudin.",
     "available": 30
   },
   {
@@ -25,6 +28,7 @@
     "img": "https://cdn.create.vista.com/api/media/small/88326862/stock-photo-glass-jar-with-metal-lid",
     "name": "Producto 4",
     "price": 545,
+    "description": "Dolorum aliquip adipisicing sodales, quas varius, proin venenatis ligula. Voluptatem adipiscing, venenatis aliquet ea iste occaecati facilis eum netus sollicitudin.",
     "available": 1
   },
   {
@@ -32,6 +36,7 @@
     "img": "https://cdn.create.vista.com/api/media/small/88326908/stock-photo-tin-can-with-metal-cap",
     "name": "Producto 5",
     "price": 6546,
+    "description": "Dolorum aliquip adipisicing sodales, quas varius, proin venenatis ligula. Voluptatem adipiscing, venenatis aliquet ea iste occaecati facilis eum netus sollicitudin.",
     "available": 2
   },
   {
@@ -39,6 +44,7 @@
     "img": "https://cdn.create.vista.com/api/media/small/9370535/stock-photo-empty-jars",
     "name": "Producto 6",
     "price": 1234,
+    "description": "Dolorum aliquip adipisicing sodales, quas varius, proin venenatis ligula. Voluptatem adipiscing, venenatis aliquet ea iste occaecati facilis eum netus sollicitudin.",
     "available": 4
   },
   {
@@ -46,6 +52,7 @@
     "img": "https://cdn.create.vista.com/api/media/medium/130725702/stock-photo-cosmetic-or-medical-packaging-template?token=",
     "name": "Producto 7",
     "price": 457,
+    "description": "Dolorum aliquip adipisicing sodales, quas varius, proin venenatis ligula. Voluptatem adipiscing, venenatis aliquet ea iste occaecati facilis eum netus sollicitudin.",
     "available": 0
   },
   {
@@ -53,6 +60,7 @@
     "img": "https://cdn.create.vista.com/api/media/small/87456464/stock-photo-toothpaste-tube-for-cosmetic-package",
     "name": "Producto 8",
     "price": 364,
+    "description": "Dolorum aliquip adipisicing sodales, quas varius, proin venenatis ligula. Voluptatem adipiscing, venenatis aliquet ea iste occaecati facilis eum netus sollicitudin.",
     "available": 1
   }
 ]

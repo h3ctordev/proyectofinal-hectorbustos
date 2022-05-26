@@ -1,63 +1,28 @@
 <template>
   <div id="app">
-    <nav-bar :cart="cart" @complete="onCompleteBuyout" />
-    <div class="d-flex flex-wrap justify-content-center p-5 my-5">
-      <div v-for="item in products" :key="item.id">
-        <product-card class="m-2" :product="item" @add-cart="onAddCart" />
-      </div>
-    </div>
+    <router-view />
   </div>
 </template>
 
-<script>
-import ProductCard from "@/components/ProductCard";
-import NavBar from "@/components/NavBar";
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
 
-// mock productos
-import mockProducts from "./db/products.json";
+nav {
+  padding: 30px;
+}
 
-export default {
-  name: "App",
-  components: {
-    ProductCard,
-    NavBar,
-  },
-  data() {
-    return {
-      products: [...mockProducts],
-      cart: [],
-      dismissCountDown: 0,
-      dismissSecs: 10,
-    };
-  },
-  methods: {
-    onAddCart(value) {
-      this.products = this.products.map((p) =>
-        p.id === value.id ? { ...p, available: p.available - value.qty } : p
-      );
-      if (this.cart.find((p) => p.id === value.id))
-        this.cart = this.cart.map((p) =>
-          p.id === value.id
-            ? {
-                ...p,
-                qty: p.qty + value.qty,
-                total: p.qty + value.qty * value.price,
-              }
-            : { ...p }
-        );
-      else this.cart.push({ ...value, total: value.qty * value.price });
-    },
-    onCompleteBuyout(total) {
-      const content = `Su compra por el monto de $${total} se completo con exito`;
-      this.cart = [];
-      this.$bvToast.toast(content, {
-        title: "Compra Exitosa",
-        variant: "success",
-        autoHideDelay: 2000,
-        appendToast: true,
-        solid: true,
-      });
-    },
-  },
-};
-</script>
+nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+nav a.router-link-exact-active {
+  color: #42b983;
+}
+</style>
