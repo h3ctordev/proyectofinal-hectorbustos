@@ -15,6 +15,11 @@
       </b-table>
     </b-col>
     <b-row align-h="end">
+      <b-col col cols="3" class="pl-5">
+        <b-button variant="outline-danger" @click="onCartClean">
+          Limpiar Carro
+        </b-button>
+      </b-col>
       <b-col col cols="3">
         <b-button
           variant="outline-success"
@@ -61,11 +66,12 @@ export default {
   },
   methods: {
     onConfirmBuyout() {
-      delete this.cart.__ob__;
-      console.table(this.cart);
       const total = this.$options.filters.clp(this.getTotal);
       this.open = false;
       this.$emit("complete", total);
+    },
+    onCartClean() {
+      this.$emit("cart-clean");
     },
   },
   filters: {

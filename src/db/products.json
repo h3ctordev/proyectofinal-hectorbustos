@@ -1,6 +1,6 @@
 [
   {
-    "id": "62843d52ea33835c0a392886",
+    "id": "1",
     "img": "https://cdn.create.vista.com/api/media/medium/88326858/stock-photo-glass-jar-with-metal-lid?token=",
     "name": "Producto 1",
     "price": 7890,
@@ -8,7 +8,7 @@
     "available": 10
   },
   {
-    "id": "62843d9c36ad66933bb9966d",
+    "id": "2",
     "img": "https://cdn.create.vista.com/api/media/small/447850096/stock-photo-rendering-transparent-plastic-pills-jars",
     "name": "Producto 2",
     "price": 999,
@@ -16,7 +16,7 @@
     "available": 20
   },
   {
-    "id": "62843daa6de0f4952a677e01",
+    "id": "3",
     "img": "https://cdn.create.vista.com/api/media/medium/130725702/stock-photo-cosmetic-or-medical-packaging-template?token=",
     "name": "Producto 3",
     "price": 1421,
@@ -24,7 +24,7 @@
     "available": 30
   },
   {
-    "id": "62843db794cd8d29edbc796f",
+    "id": "4",
     "img": "https://cdn.create.vista.com/api/media/small/88326862/stock-photo-glass-jar-with-metal-lid",
     "name": "Producto 4",
     "price": 545,
@@ -32,7 +32,7 @@
     "available": 1
   },
   {
-    "id": "62843dcef56014a34ead0dca",
+    "id": "5",
     "img": "https://cdn.create.vista.com/api/media/small/88326908/stock-photo-tin-can-with-metal-cap",
     "name": "Producto 5",
     "price": 6546,
@@ -40,7 +40,7 @@
     "available": 2
   },
   {
-    "id": "62843ddfd37a499e4c52f118",
+    "id": "6",
     "img": "https://cdn.create.vista.com/api/media/small/9370535/stock-photo-empty-jars",
     "name": "Producto 6",
     "price": 1234,
@@ -48,7 +48,7 @@
     "available": 4
   },
   {
-    "id": "62843dfff7384c233e47a885",
+    "id": "7",
     "img": "https://cdn.create.vista.com/api/media/medium/130725702/stock-photo-cosmetic-or-medical-packaging-template?token=",
     "name": "Producto 7",
     "price": 457,
@@ -56,7 +56,7 @@
     "available": 0
   },
   {
-    "id": "62843e15e636fb386f281a60",
+    "id": "8",
     "img": "https://cdn.create.vista.com/api/media/small/87456464/stock-photo-toothpaste-tube-for-cosmetic-package",
     "name": "Producto 8",
     "price": 364,

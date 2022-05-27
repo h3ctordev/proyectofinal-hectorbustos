@@ -26,7 +26,11 @@
       centered
       hide-footer
     >
-      <cart-table :cart="cart" @complete="onCompleteBuyout" />
+      <cart-table
+        :cart="cart"
+        @complete="onCompleteBuyout"
+        @cart-clean="onCartClean"
+      />
     </b-modal>
   </div>
 </template>
@@ -35,7 +39,7 @@
 import ProductCard from "@/components/ProductCard";
 import NavBar from "@/components/NavBar";
 import CartTable from "@/components/CartTable";
-import axios from "axios";
+import services from "@/services";
 // // mock productos
 // import mockProducts from "@/db/products.json";
 
@@ -61,14 +65,30 @@ export default {
       },
     };
   },
+  computed: {
+    isCartEmpty() {
+      if (this.cart.length) return false;
+      return true;
+    },
+  },
   async mounted() {
     await this.getProducts();
+    const order = this.getLocalStorage("order");
+    this.cart = [...(order?.cart || [])];
   },
   methods: {
+    onCartClean() {
+      this.open = false;
+      if (this.isCartEmpty) {
+        return;
+      }
+      this.cart = [];
+    },
     onAddCart(value) {
       this.products = this.products.map((p) =>
         p.id === value.id ? { ...p, available: p.available - value.qty } : p
       );
+
       if (this.cart.find((p) => p.id === value.id))
         this.cart = this.cart.map((p) =>
           p.id === value.id
@@ -91,15 +111,12 @@ export default {
         appendToast: true,
         solid: true,
       });
+      this.setLocalStorage("cart", this.cart);
     },
     async getProducts() {
       try {
         this.isLoading = true;
-        console.log(process.env);
-        const res = await axios.get(
-          `${process.env.VUE_APP_URL_MOCKAPI}/products`
-        );
-        console.log(res);
+        const res = await services.products.getAll();
         if (res.statusText !== "OK") {
           this.alert.message = "Error al cargar los productos";
           this.alert.variant = "warning";
