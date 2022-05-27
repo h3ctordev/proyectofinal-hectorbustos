@@ -3,14 +3,13 @@
     :img-src="product.img || '@/assets/logo.png'"
     img-alt="Image"
     img-top
-    tag="product"
     img-height="260"
     style="width: 20rem"
     class="mb-2"
   >
     <b-card-title class="text-center" v-text="product.name || 'producto'" />
     <b-card-text class="text-center">
-      Dispobibles: {{ product.available }}
+      Disponibles: {{ product.available }}
     </b-card-text>
     <b-card-text class="text-center text-black">
       <b> $ {{ product.price | clp }} </b>
@@ -25,7 +24,6 @@
         <b-form-input
           variant="outline-secondary"
           v-model="qty"
-          :value="product.available === 0 ? 0 : qty"
           class="text-center"
           style="max-width: 3rem"
         />
@@ -64,13 +62,16 @@ export default {
   },
   data() {
     return {
-      qty: 1,
+      qty: this.product.available === 0 ? 0 : 1,
     };
   },
   watch: {
     "product.available"() {
-      if (this.product.available === 0) this.qty = 0;
-      this.qty = 1;
+      if (this.product.available === 0) {
+        this.qty = 0;
+      } else {
+        this.qty = 1;
+      }
     },
   },
   methods: {
@@ -87,13 +88,6 @@ export default {
     removeQty() {
       if (this.qty === 1) return;
       this.qty -= 1;
-    },
-  },
-  filters: {
-    clp: (value) => {
-      return new Intl.NumberFormat("es-CL", {
-        maximumSignificantDigits: 5,
-      }).format(value);
     },
   },
 };
