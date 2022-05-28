@@ -83,6 +83,10 @@ export default {
         return;
       }
       this.cart = [];
+      this.setLocalStorage("order", {
+        cart: this.cart,
+        userId: this.getSessionStorage("user").id,
+      });
     },
     onAddCart(value) {
       this.products = this.products.map((p) =>
@@ -100,6 +104,10 @@ export default {
             : { ...p }
         );
       else this.cart.push({ ...value, total: value.qty * value.price });
+      this.setLocalStorage("order", {
+        cart: this.cart,
+        userId: this.getSessionStorage("user").id,
+      });
     },
     onCompleteBuyout(total) {
       const content = `Su compra por el monto de $${total} se completo con exito`;
@@ -111,7 +119,10 @@ export default {
         appendToast: true,
         solid: true,
       });
-      this.setLocalStorage("cart", this.cart);
+      this.setLocalStorage("order", {
+        cart: this.cart,
+        userId: this.getSessionStorage("user").id,
+      });
     },
     async getProducts() {
       try {

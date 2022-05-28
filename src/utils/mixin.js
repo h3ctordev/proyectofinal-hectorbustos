@@ -25,8 +25,27 @@ const mixin = {
       localStorage.clear();
       return true;
     },
+    removeItemLocalStorage(item) {
+      localStorage.removeItem(item);
+      return true;
+    },
     setLocalStorage(item, payload) {
       localStorage.setItem(item, JSON.stringify(payload, null, 2));
+      return true;
+    },
+    getSessionStorage(item) {
+      return JSON.parse(sessionStorage.getItem(item));
+    },
+    clearSessionStorage() {
+      sessionStorage.clear();
+      return true;
+    },
+    removeItemSessionStorage(item) {
+      sessionStorage.removeItem(item);
+      return true;
+    },
+    setSessionStorage(item, payload) {
+      sessionStorage.setItem(item, JSON.stringify(payload, null, 2));
       return true;
     },
   },

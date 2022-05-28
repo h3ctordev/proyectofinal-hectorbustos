@@ -9,7 +9,6 @@ const users = {
       const queryStr = Object.keys(query)
         .map((key) => key + "=" + query[key])
         .join("&");
-      console.log("QueryString", queryStr);
       return await axios.get(`${endpoint}?${queryStr}`);
     }
     return await axios.get(endpoint);
@@ -19,10 +18,10 @@ const users = {
     return await axios.get(`${endpoint}/${id}`);
   },
   create: async (user) => {
-    const { email, name, avatar, password, role } = user;
-    if (!(email && name && avatar && password && role))
+    const { email, firstName, lastName, avatar, password } = user;
+    if (!(email && avatar && password && firstName && lastName))
       throw TypeError("MISSING_PARAMS");
-
+    if (!user.role) user.role = "client";
     return await axios.post(`${endpoint}`, user);
   },
   update: async (user) => {
