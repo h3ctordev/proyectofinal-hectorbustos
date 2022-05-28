@@ -1,19 +1,21 @@
 <template>
-  <b-container>
-    <b-card title="Ingresar" border-variant="dark" class="rounded-0">
-      <b-card-text>
+  <b-container class="w-max my-3">
+    <b-card title="Ingresar" body-class="py-5" border-variant="dark">
+      <b-col col cols="12">
         <hr />
-        <b-col col cols="12" align-self="center">
-          <v-form :fields="fields" :values="user" @send-form="onSendForm" />
-        </b-col> </b-card-text
-      >78
+        <v-form
+          :fields="fields"
+          :values="user"
+          @send-form="onSendForm"
+          :button="button"
+        />
+      </b-col>
     </b-card>
   </b-container>
 </template>
 
 <script>
 import VForm from "@/components/VForm.vue";
-import services from "@/services";
 export default {
   name: "LoginCard",
   components: {
@@ -24,6 +26,13 @@ export default {
       user: {
         email: "",
         password: "",
+      },
+      button: {
+        label: "Ingresar",
+        block: true,
+        pill: true,
+        class: "px-5 my-3",
+        variant: "success",
       },
       fields: [
         {
@@ -44,13 +53,12 @@ export default {
           label: "Clave",
           required: true,
           type: "password",
-          passwd: true,
+          minlength: 8,
           messages: {
             success: "Correcto!",
             errors: {
               required: "La clave es requerida",
-              passwd:
-                "La clave debe teenr almenos 8 caracteres, mayusculas, minusculas y un caracteres especial",
+              minlength: "La clave debe teenr almenos 8 caracteres",
             },
           },
         },
@@ -59,13 +67,17 @@ export default {
   },
   methods: {
     async onSendForm(user) {
-      console.log(user);
-      console.log(services.users);
-      const login = await services.users.getAll({ email: user.email });
-      console.log(login.data);
+      this.$emit("send-login", user);
     },
   },
 };
 </script>
 
-<style></style>
+<style scoped>
+.w-max {
+  width: 30rem;
+}
+.h-min {
+  min-height: 40rem;
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
   <vue-form :state="formstate" @submit.prevent="onSubmit">
     <b-row align-h="center">
-      <b-col cols="9" v-for="field in fields" :key="field.key">
+      <b-col cols="12" v-for="field in fields" :key="field.key">
         <validate
           class="form-group"
           :class="fieldClassName(formstate[field.key])"
@@ -22,6 +22,7 @@
             :max="field.max"
             :passwd="field.passwd"
             :minlength="field.minlength"
+            :maxlength="field.maxlength"
             :class="fieldClassName(formstate[field.key])"
           />
           <field-messages
@@ -41,6 +42,9 @@
             <small class="text-danger font-weight-bold" slot="minlength">
               {{ field.messages.errors.minlength }}
             </small>
+            <small class="text-danger font-weight-bold" slot="maxlength">
+              {{ field.messages.errors.maxlength }}
+            </small>
             <small class="text-danger font-weight-bold" slot="passwd">
               {{ field.messages.errors.passwd }}
             </small>
@@ -49,7 +53,15 @@
       </b-col>
     </b-row>
     <div class="py-2 text-center">
-      <button class="btn btn-primary" type="submit">Enviar</button>
+      <b-button
+        :class="button.class || ''"
+        :variant="button.variant"
+        :block="button.block"
+        :pill="button.pill"
+        type="submit"
+      >
+        {{ button.label || "Enviar" }}
+      </b-button>
     </div>
   </vue-form>
 </template>
@@ -65,6 +77,10 @@ export default {
     values: {
       type: Object,
       require: true,
+    },
+    button: {
+      type: Object,
+      default: () => ({}),
     },
   },
   data() {

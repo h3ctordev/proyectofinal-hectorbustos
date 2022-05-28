@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <b-col>
+    <b-row>
       <b-table :items="cart" :fields="fields">
         <template #cell(price)="{ item }"> $ {{ item.price | clp }} </template>
         <template #cell(total)="{ item }"> $ {{ item.total | clp }} </template>
@@ -13,22 +13,18 @@
           </b-tr>
         </template>
       </b-table>
-    </b-col>
+    </b-row>
     <b-row align-h="end">
-      <b-col col cols="3" class="pl-5">
-        <b-button variant="outline-danger" @click="onCartClean">
-          Limpiar Carro
-        </b-button>
-      </b-col>
-      <b-col col cols="3">
-        <b-button
-          variant="outline-success"
-          :disabled="countItems === 0"
-          @click="onConfirmBuyout"
-        >
-          Confirmar compra
-        </b-button>
-      </b-col>
+      <b-button class="mx-1" variant="outline-danger" @click="onCartClean">
+        Limpiar
+      </b-button>
+      <b-button
+        variant="success"
+        :disabled="countItems === 0"
+        @click="onConfirmBuyout"
+      >
+        Comprar
+      </b-button>
     </b-row>
   </b-container>
 </template>
