@@ -126,6 +126,59 @@
           </b-card-body>
         </b-collapse>
       </b-card>
+      <b-card no-body class="w-100">
+        <b-card-header header-tag="header" role="tab">
+          <b-button block v-b-toggle="'list-order'" variant="outline-info" pill>
+            Compras
+            <b-icon
+              :animation="show.order ? 'cylon-vertical' : ''"
+              :icon="show.order ? 'chevron-bar-up' : 'chevron-bar-down'"
+            ></b-icon>
+          </b-button>
+        </b-card-header>
+        <b-collapse
+          id="list-order"
+          @input="(value) => (show.order = value)"
+          accordion="my-accordion"
+          role="tabpanel"
+        >
+          <b-card-body>
+            <b-row>
+              <b-col cols="12">
+                <h3>Compras</h3>
+              </b-col>
+              <b-col cols="12" v-for="order in orders" :key="order.id">
+                <b-table
+                  :fields="fieldsOrdersCart"
+                  striped
+                  hover
+                  :items="order.cart"
+                >
+                  <template #cell(img)="{ item }">
+                    <b-avatar :src="item.img" rounded></b-avatar>
+                  </template>
+                  <template #cell(price)="{ item }">
+                    $ {{ item.price | clp }}
+                  </template>
+                  <template #cell(description)="{ item }">
+                    {{ item.description | truncate }}
+                  </template>
+                  <template #cell(tot)="{ item }">
+                    $ {{ (item.price * item.qty) | clp }}
+                  </template>
+                </b-table>
+                <b-col class="mb-3">
+                  <h5><b>Total: </b> $ {{ +order.total | clp }}</h5>
+                  <b> Fecha: </b>
+                  {{ new Date(order.date * 1000).toLocaleDateString() }}
+                  <br />
+                </b-col>
+                <hr />
+              </b-col>
+            </b-row>
+          </b-card-body>
+        </b-collapse>
+      </b-card>
     </b-row>
   </b-container>
 </template>
@@ -147,15 +200,28 @@ export default {
     return {
       show: {
         edit: true,
+        order: true,
         crudProduct: true,
         crudUser: true,
       },
       user: {},
+      orders: [],
+      fieldsOrdersCart: [
+        { label: "Imagen", key: "img" },
+        { label: "Nombre", key: "name", sortable: true },
+        { label: "Precio", key: "price", sortable: true },
+        { label: "Cantidad", key: "qty", sortable: true },
+        { label: "Descripción", key: "description" },
+        { label: "Total", key: "tot" },
+      ],
       isLoading: false,
     };
   },
-  created() {
+  async created() {
     this.user = this.getSessionStorage("user");
+    const res = await services.orders.getAll(this.user.id);
+    this.orders = [...res.data];
+    console.log("Orders: ", this.orders);
   },
   methods: {
     async onEdit(user) {

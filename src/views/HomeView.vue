@@ -81,9 +81,10 @@ export default {
       });
     },
     onAddCart(value) {
-      this.products = this.products.map((p) =>
-        p.id === value.id ? { ...p, available: p.available - value.qty } : p
-      );
+      // NOTE: No sestoy seguro de que se deba quitar las cantidades de los items antes de ejecutar la compra
+      // this.products = this.products.map((p) =>
+      //   p.id === value.id ? { ...p, available: p.available - value.qty } : p
+      // );
 
       if (this.cart.find((p) => p.id === value.id))
         this.cart = this.cart.map((p) =>
@@ -101,19 +102,56 @@ export default {
         userId: this.getSessionStorage("user").id,
       });
     },
-    onCompleteBuyout(total) {
-      const content = `Su compra por el monto de $${total} se completo con exito`;
-      this.cart = [];
-      this.toast({
-        title: "Compra Exitosa",
-        message: content,
-        variant: "success",
-        hide: 5000,
-      });
-      this.setLocalStorage("order", {
-        cart: this.cart,
-        userId: this.getSessionStorage("user").id,
-      });
+    async onCompleteBuyout(total) {
+      try {
+        const order = this.getLocalStorage("order");
+        order.total = total;
+        order.date = parseInt(new Date().getTime() / 1000);
+        const res = await services.products.getAll();
+        const productsDb = [...res.data];
+        const cartOrder = [...order.cart];
+        const orderCreated = await services.orders.create(order);
+        if (orderCreated.statusText !== "Created") {
+          this.toast({
+            title: "Aviso",
+            message: "Error al ejecutar la compra",
+            variant: "warning",
+            hide: 5000,
+          });
+          return;
+        }
+        // Se actualiza cantidades en
+        const updateProducts = cartOrder.map((p) => {
+          const product = productsDb.find((pdb) => +pdb.id === +p.id);
+          product.available = product.available - p.qty;
+          return services.products.update(product);
+        });
+        await Promise.all([...updateProducts]);
+        const content = `Su compra por el monto de $${total} se completo con exito`;
+        this.cart = [];
+        this.toast({
+          title: "Compra Exitosa",
+          message: content,
+          variant: "success",
+          hide: 5000,
+        });
+        this.setLocalStorage("order", {
+          cart: this.cart,
+          userId: this.getSessionStorage("user").id,
+        });
+        this.open = false;
+        await this.getProducts();
+      } catch (error) {
+        console.error(error);
+        this.toast({
+          title: "Error",
+          message: "Error al ejecutar la compra",
+          variant: "warning",
+          hide: 5000,
+        });
+      } finally {
+        this.isLoading = false;
+      }
     },
     async getProducts() {
       try {
