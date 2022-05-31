@@ -9,9 +9,6 @@
         </div>
       </div>
       <div v-else class="d-flex flex-wrap justify-content-center p-5 my-5">
-        <b-alert :show="alert.show" :variant="alert.variant">
-          {{ alert.message }}
-        </b-alert>
         <div v-for="item in products" :key="item.id">
           <product-card class="m-2" :product="item" @add-cart="onAddCart" />
         </div>
@@ -58,11 +55,6 @@ export default {
       dismissSecs: 10,
       open: false,
       isLoading: false,
-      alert: {
-        show: false,
-        message: "",
-        variant: null,
-      },
     };
   },
   computed: {
@@ -112,12 +104,11 @@ export default {
     onCompleteBuyout(total) {
       const content = `Su compra por el monto de $${total} se completo con exito`;
       this.cart = [];
-      this.$bvToast.toast(content, {
+      this.toast({
         title: "Compra Exitosa",
+        message: content,
         variant: "success",
-        autoHideDelay: 2000,
-        appendToast: true,
-        solid: true,
+        hide: 5000,
       });
       this.setLocalStorage("order", {
         cart: this.cart,
@@ -129,15 +120,21 @@ export default {
         this.isLoading = true;
         const res = await services.products.getAll();
         if (res.statusText !== "OK") {
-          this.alert.message = "Error al cargar los productos";
-          this.alert.variant = "warning";
-          this.alert.show = true;
+          this.toast({
+            title: "Error",
+            message: "Error al cargar los productos",
+            variant: "danger",
+            hide: 5000,
+          });
           return;
         }
         if (res.data.length === 0) {
-          this.alert.message = "Error al cargar los productos";
-          this.alert.variant = "primary";
-          this.alert.show = true;
+          this.toast({
+            title: "Error",
+            message: "Error al cargar los productos",
+            variant: "danger",
+            hide: 5000,
+          });
           return;
         }
 

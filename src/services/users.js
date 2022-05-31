@@ -25,7 +25,7 @@ const users = {
     return await axios.post(`${endpoint}`, user);
   },
   update: async (user) => {
-    const { id, userUpdate } = user;
+    const { id, ...userUpdate } = user;
     if (!id) throw TypeError("MISSING_ID_USER");
 
     return await axios.put(`${endpoint}/${id}`, userUpdate);
