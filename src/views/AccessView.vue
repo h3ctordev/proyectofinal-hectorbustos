@@ -13,32 +13,60 @@
         <b-spinner></b-spinner>
       </b-col>
     </b-row>
-    <b-row class="my-2" align-h="center" align-v="center">
-      <b-alert
-        :show="alert.show"
-        dismissible
-        :variant="alert.varian"
-        @dismissed="alert.show = 0"
-        @dismiss-count-down="countDownChanged"
-        class="px-5"
-      >
-        {{ alert.message }} <br />
-        <b-progress
-          height="2px"
-          :max="alert.seconds"
-          :value="alert.show"
-        ></b-progress>
-      </b-alert>
-    </b-row>
-    <b-row>
-      <b-col
-        col
-        cols="12"
-        class="d-flex flex-wrap justify-content-center align-items-center p-5 my-5"
-      >
-        <login-card @send-login="onLogin" />
-        <register-card @send-register="onRegister" />
+    <b-row class="accordion w-75 mx-auto" role="tablist">
+      <b-col cols="12" align-self="start" class="my-3">
+        <b-button size="lg" pill to="/">
+          <b-icon icon="arrow-left"></b-icon> Volver
+        </b-button>
       </b-col>
+      <b-card no-body class="w-100">
+        <b-card-header header-tag="header" role="tab">
+          <b-button block v-b-toggle="'login-user'" variant="outline-info" pill>
+            Login
+            <b-icon
+              :animation="show.login ? 'cylon-vertical' : ''"
+              :icon="show.login ? 'chevron-bar-up' : 'chevron-bar-down'"
+            ></b-icon>
+          </b-button>
+        </b-card-header>
+        <b-collapse
+          id="login-user"
+          visible
+          @input="(value) => (show.login = value)"
+          accordion="my-accordion"
+          role="tabpanel"
+        >
+          <b-card-body>
+            <login-card @send-login="onLogin" />
+          </b-card-body>
+        </b-collapse>
+      </b-card>
+      <b-card no-body class="w-100">
+        <b-card-header header-tag="header" role="tab">
+          <b-button
+            block
+            v-b-toggle="'register-user'"
+            variant="outline-info"
+            pill
+          >
+            Registrate
+            <b-icon
+              :animation="show.register ? 'cylon-vertical' : ''"
+              :icon="show.register ? 'chevron-bar-up' : 'chevron-bar-down'"
+            ></b-icon>
+          </b-button>
+        </b-card-header>
+        <b-collapse
+          id="register-user"
+          @input="(value) => (show.register = value)"
+          accordion="my-accordion"
+          role="tabpanel"
+        >
+          <b-card-body>
+            <register-card @send-register="onRegister" />
+          </b-card-body>
+        </b-collapse>
+      </b-card>
     </b-row>
   </b-container>
 </template>
@@ -56,48 +84,49 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
-      alert: {
-        seconds: 0,
-        show: 0,
-        message: "",
-        variant: null,
+      show: {
+        login: true,
+        register: false,
       },
+      isLoading: false,
     };
   },
   methods: {
     async onRegister(user) {
       try {
         this.isLoading = true;
-        console.log(user);
         const query = await services.users.getAll({
           email: user.email,
         });
-        console.log("Query: ", query);
         // Error en consulta
         if (query.statusText !== "OK") {
-          this.alert.message = "Error en la consulta al servidor";
-          this.alert.variant = "danger";
-          this.alert.show = 5;
-          this.alert.seconds = 5;
+          this.toast({
+            title: "Error",
+            message: "Error en la consulta al servidor",
+            variant: "danger",
+            hide: 5000,
+          });
           return;
         }
         // Usuario existe o ya esta registrado
         if (query.data.length > 0) {
-          this.alert.message = "El usuario esta registrado";
-          this.alert.variant = "warning";
-          this.alert.show = 5;
-          this.alert.seconds = 5;
+          this.toast({
+            title: "Aviso",
+            message: "El usuario esta registrado",
+            variant: "warning",
+            hide: 5000,
+          });
           return;
         }
         const { statusText } = await services.users.create(user);
         // Error en consulta
-        console.log("Create status: ", statusText);
         if (statusText !== "Created") {
-          this.alert.message = "Error en la consulta al servidor";
-          this.alert.variant = "danger";
-          this.alert.show = 5;
-          this.alert.seconds = 5;
+          this.toast({
+            title: "Error",
+            message: "Error en la consulta al servidor",
+            variant: "danger",
+            hide: 5000,
+          });
           return;
         }
         // Se incia sesión con usuario recien registrado
@@ -106,10 +135,12 @@ export default {
         this.onLogin({ email, password });
       } catch (error) {
         console.error(error);
-        this.alert.message = JSON.stringify(error);
-        this.alert.variant = "danger";
-        this.alert.show = 10;
-        this.alert.seconds = 10;
+        this.toast({
+          title: "Error",
+          message: JSON.stringify(error),
+          variant: "danger",
+          hide: 5000,
+        });
         return;
       } finally {
         this.isLoading = false;
@@ -118,30 +149,34 @@ export default {
     async onLogin(user) {
       try {
         this.isLoading = true;
-        console.log(user);
         const { data, statusText } = await services.users.getAll({
           email: user.email,
         });
-        console.log(data);
         if (statusText !== "OK") {
-          this.alert.message = "Error en la consulta al servidor";
-          this.alert.variant = "danger";
-          this.alert.show = 5;
-          this.alert.seconds = 5;
+          this.toast({
+            title: "Error",
+            message: "Error en la consulta al servidor",
+            variant: "danger",
+            hide: 5000,
+          });
           return;
         }
         if (data.length === 0) {
-          this.alert.message = "No se encontro el usuario";
-          this.alert.variant = "warning";
-          this.alert.show = 5;
-          this.alert.seconds = 5;
+          this.toast({
+            title: "Aviso",
+            message: "No se encontro el usuario",
+            variant: "warning",
+            hide: 5000,
+          });
           return;
         }
         if (user.password !== data[0].password) {
-          this.alert.message = "Clave o usuario no correponde";
-          this.alert.variant = "warning";
-          this.alert.show = 5;
-          this.alert.seconds = 5;
+          this.toast({
+            title: "Aviso",
+            message: "Clave o usuario no corresponde",
+            variant: "warning",
+            hide: 5000,
+          });
           return;
         }
         // eslint-disable-next-line
@@ -153,17 +188,16 @@ export default {
         this.$router.push({ name: "home" });
       } catch (error) {
         console.error(error);
-        this.alert.message = JSON.stringify(error);
-        this.alert.variant = "danger";
-        this.alert.show = 10;
-        this.alert.seconds = 10;
+        this.toast({
+          title: "Error",
+          message: JSON.stringify(error),
+          variant: "danger",
+          hide: 5000,
+        });
         return;
       } finally {
         this.isLoading = false;
       }
-    },
-    countDownChanged(dismissCountDown) {
-      this.alert.show = dismissCountDown;
     },
   },
 };

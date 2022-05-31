@@ -8,7 +8,6 @@ const products = {
       const queryStr = Object.keys(query)
         .map((key) => key + "=" + query[key])
         .join("&");
-      console.log("QueryString", queryStr);
       return await axios.get(`${endpoint}?${queryStr}`);
     }
     return await axios.get(endpoint);
@@ -25,9 +24,8 @@ const products = {
     return await axios.post(`${endpoint}`, product);
   },
   update: async (product) => {
-    const { id, productUpdate } = product;
+    const { id, ...productUpdate } = product;
     if (!id) throw TypeError("MISSING_ID_PRODUCT");
-
     return await axios.put(`${endpoint}/${id}`, productUpdate);
   },
   delete: async (id) => {

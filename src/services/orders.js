@@ -18,7 +18,7 @@ const orders = {
     return await axios.post(`${endpoint}/${userId}/orders`, order);
   },
   update: async (userId, order) => {
-    const { id, orderUpdate } = order;
+    const { id, ...orderUpdate } = order;
     if (!id) throw TypeError("MISSING_ID_ORDER");
     if (!userId) throw TypeError("MISSING_ID_USER");
 

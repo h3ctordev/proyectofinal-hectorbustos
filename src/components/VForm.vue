@@ -12,8 +12,38 @@
               *
             </span>
           </label>
-          <input
+          <b-form-textarea
+            v-if="field.type === 'textarea'"
             v-model.lazy="models[field.key]"
+            :value="models[field.key]"
+            :disabled="field.disable || false"
+            :required="field.required"
+            :name="field.key"
+            :type="field.type || 'text'"
+            class="form-control"
+            :min="field.min"
+            :max="field.max"
+            :passwd="field.passwd"
+            :minlength="field.minlength"
+            :maxlength="field.maxlength"
+            :class="fieldClassName(formstate[field.key])"
+          />
+          <b-form-select
+            v-else-if="field.type === 'selec'"
+            v-model.lazy="models[field.key]"
+            :value="models[field.key]"
+            :disabled="field.disable || false"
+            :required="field.required"
+            :name="field.key"
+            class="form-control"
+            :class="fieldClassName(formstate[field.key])"
+            :options="field.options"
+          ></b-form-select>
+          <b-form-input
+            v-else
+            v-model.lazy="models[field.key]"
+            :value="models[field.key]"
+            :disabled="field.disable || false"
             :required="field.required"
             :name="field.key"
             :type="field.type || 'text'"
@@ -41,6 +71,12 @@
             </small>
             <small class="text-danger font-weight-bold" slot="minlength">
               {{ field.messages.errors.minlength }}
+            </small>
+            <small class="text-danger font-weight-bold" slot="min">
+              {{ field.messages.errors.min }}
+            </small>
+            <small class="text-danger font-weight-bold" slot="max">
+              {{ field.messages.errors.max }}
             </small>
             <small class="text-danger font-weight-bold" slot="maxlength">
               {{ field.messages.errors.maxlength }}

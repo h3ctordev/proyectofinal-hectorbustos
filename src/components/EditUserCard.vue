@@ -1,17 +1,20 @@
 <template>
-  <b-container class="w-max my-3">
-    <b-card title="Registrarse" border-variant="dark">
-      <b-card-text>
+  <b-container class="p-5">
+    <b-card
+      class="w-100"
+      title="Editar Usuario"
+      body-class="p-5"
+      border-variant="dark"
+    >
+      <b-col col cols="12">
         <hr />
-        <b-col col cols="12" align-self="center">
-          <v-form
-            :fields="fields"
-            :values="user"
-            @send-form="onSendForm"
-            :button="button"
-          />
-        </b-col>
-      </b-card-text>
+        <v-form
+          :fields="fields"
+          :values="user"
+          :button="button"
+          @send-form="onSendForm"
+        />
+      </b-col>
     </b-card>
   </b-container>
 </template>
@@ -19,24 +22,34 @@
 <script>
 import VForm from "@/components/VForm.vue";
 export default {
-  name: "RegisterCard",
+  name: "EditUserCard",
   components: {
     VForm,
   },
+  created() {
+    this.user = this.getSessionStorage("user");
+  },
   data() {
     return {
-      user: {
-        email: "",
-        password: "",
-      },
+      user: {},
       button: {
-        label: "Registrar",
+        label: "Editar",
         block: true,
         pill: true,
         class: "px-5 my-3",
-        variant: "primary",
+        variant: "success",
       },
       fields: [
+        {
+          key: "id",
+          label: "ID",
+          required: true,
+          disable: true,
+          messages: {
+            success: "",
+            errors: {},
+          },
+        },
         {
           key: "email",
           label: "Email",
@@ -89,14 +102,11 @@ export default {
         },
         {
           key: "password",
-          label: "Clave",
-          required: true,
+          label: "Clave Nueva",
           type: "password",
           minlength: 8,
           messages: {
-            success: "Correcto!",
             errors: {
-              required: "La clave es requerida",
               minlength: "Debe tener al menos 8 caracteres.",
             },
           },
@@ -106,15 +116,13 @@ export default {
   },
   methods: {
     async onSendForm(user) {
-      this.$emit("send-register", user);
+      this.$emit("send-edit", user);
     },
   },
 };
 </script>
+
 <style scoped>
-.w-max {
-  width: 30rem;
-}
 .h-min {
   min-height: 40rem;
 }
