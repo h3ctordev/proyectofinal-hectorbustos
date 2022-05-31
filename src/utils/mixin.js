@@ -70,6 +70,9 @@ const mixin = {
         maximumSignificantDigits: 5,
       }).format(value);
     },
+    truncate: (value) => {
+      return `${value.slice(0, 30)} ...`;
+    },
   },
 };
 

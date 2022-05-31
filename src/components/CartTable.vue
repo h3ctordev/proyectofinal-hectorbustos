@@ -62,9 +62,8 @@ export default {
   },
   methods: {
     onConfirmBuyout() {
-      const total = this.$options.filters.clp(this.getTotal);
       this.open = false;
-      this.$emit("complete", total);
+      this.$emit("complete", this.getTotal);
     },
     onCartClean() {
       this.$emit("cart-clean");
