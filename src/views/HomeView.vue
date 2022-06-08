@@ -37,6 +37,7 @@ import ProductCard from "@/components/ProductCard";
 import NavBar from "@/components/NavBar";
 import CartTable from "@/components/CartTable";
 import services from "@/services";
+import { mapActions } from "vuex";
 // // mock productos
 // import mockProducts from "@/db/products.json";
 
@@ -69,6 +70,7 @@ export default {
     this.cart = [...(order?.cart || [])];
   },
   methods: {
+    ...mapActions("products", ["productsList"]),
     onCartClean() {
       this.open = false;
       if (this.isCartEmpty) {
@@ -156,7 +158,7 @@ export default {
     async getProducts() {
       try {
         this.isLoading = true;
-        const res = await services.products.getAll();
+        const res = await this.productsList();
         if (res.statusText !== "OK") {
           this.toast({
             title: "Error",

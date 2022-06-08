@@ -2,7 +2,7 @@ import axios from "axios";
 
 const endpoint = `${process.env.VUE_APP_URL_MOCKAPI}/products`;
 
-const products = {
+export default {
   getAll: async (query) => {
     if (query) {
       const queryStr = Object.keys(query)
@@ -33,5 +33,3 @@ const products = {
     return await axios.delete(`${endpoint}/${id}`);
   },
 };
-
-export default products;

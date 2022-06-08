@@ -2,7 +2,7 @@ import axios from "axios";
 
 const endpoint = `${process.env.VUE_APP_URL_MOCKAPI}/users`;
 
-const orders = {
+export default {
   getAll: async (userId) => {
     return await axios.get(`${endpoint}/${userId}/orders`);
   },
@@ -28,5 +28,3 @@ const orders = {
     return await axios.delete(`${endpoint}/${id}`);
   },
 };
-
-export default orders;

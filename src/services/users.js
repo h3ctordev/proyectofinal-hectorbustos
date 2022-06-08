@@ -2,7 +2,7 @@ import axios from "axios";
 
 const endpoint = `${process.env.VUE_APP_URL_MOCKAPI}/users`;
 
-const users = {
+export default {
   // query como objeto
   getAll: async (query) => {
     if (query) {
@@ -35,5 +35,3 @@ const users = {
     return await axios.delete(`${endpoint}/${id}`);
   },
 };
-
-export default users;
