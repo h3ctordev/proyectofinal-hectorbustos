@@ -70,7 +70,7 @@ export default {
     this.cart = [...(order?.cart || [])];
   },
   methods: {
-    ...mapActions("products", ["productsList"]),
+    ...mapActions("products", ["productsList", "updateProduct"]),
     onCartClean() {
       this.open = false;
       if (this.isCartEmpty) {
@@ -109,8 +109,7 @@ export default {
         const order = this.getLocalStorage("order");
         order.total = total;
         order.date = parseInt(new Date().getTime() / 1000);
-        const res = await services.products.getAll();
-        const productsDb = [...res.data];
+        const productsDb = await this.productsList();
         const cartOrder = [...order.cart];
         const orderCreated = await services.orders.create(order);
         if (orderCreated.statusText !== "Created") {
@@ -126,7 +125,7 @@ export default {
         const updateProducts = cartOrder.map((p) => {
           const product = productsDb.find((pdb) => +pdb.id === +p.id);
           product.available = product.available - p.qty;
-          return services.products.update(product);
+          return this.updateProduct(product);
         });
         await Promise.all([...updateProducts]);
         const content = `Su compra por el monto de $${total} se completo con exito`;
@@ -155,32 +154,19 @@ export default {
         this.isLoading = false;
       }
     },
+
     async getProducts() {
       try {
         this.isLoading = true;
-        const res = await this.productsList();
-        if (res.statusText !== "OK") {
-          this.toast({
-            title: "Error",
-            message: "Error al cargar los productos",
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
-        if (res.data.length === 0) {
-          this.toast({
-            title: "Error",
-            message: "Error al cargar los productos",
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
-
-        this.products = [...res.data];
+        this.products = await this.productsList();
       } catch (error) {
         console.error(error);
+        this.toast({
+          title: error.title || "Aviso",
+          message: error?.message || "Error al cargar los productos",
+          variant: error?.variant || "danger",
+          hide: error?.time || 5000,
+        });
       } finally {
         this.isLoading = false;
       }

@@ -41,11 +41,7 @@ export default {
           required: true,
           type: "email",
           messages: {
-            success: "Correcto!",
-            errors: {
-              required: "El Mail es requerido",
-              email: "El Mail no es valido",
-            },
+            errors: {},
           },
         },
         {

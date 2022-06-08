@@ -2,8 +2,10 @@ import products from "@/services/products";
 import orders from "@/services/orders";
 import users from "@/services/users";
 
-export default {
+const services = {
   products,
   orders,
   users,
 };
+
+export default services;

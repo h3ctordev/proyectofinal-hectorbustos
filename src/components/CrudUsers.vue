@@ -57,8 +57,8 @@
 </template>
 
 <script>
-import services from "@/services";
 import VForm from "@/components/VForm.vue";
+import { mapActions } from "vuex";
 
 export default {
   name: "CrudUsers",
@@ -287,6 +287,13 @@ export default {
     };
   },
   methods: {
+    ...mapActions("users", [
+      "register",
+      "usersList",
+      "removeUser",
+      "updateUser",
+      "createUser",
+    ]),
     onModalCreate(item) {
       this.create.item = { ...item };
       this.create.show = true;
@@ -303,22 +310,10 @@ export default {
       try {
         if (item?.isTrusted) delete item.isTrusted;
         this.isLoading = true;
-        const res = await services.users.create(item);
-
-        if (res.statusText !== "Created") {
-          this.toast({
-            title: `Problemas al crear el Usuario`,
-            message: `El Usuario no se agrego correctamente`,
-            variant: "danger",
-            hide: 5000,
-          });
-          this.create.show = false;
-          this.create.item = { ...item };
-          return;
-        }
+        const data = await this.createUser(item);
         this.toast({
           title: `Usuario agregado correctamente`,
-          message: `El Usuario id: ${res.data.id}, se agrego correctamente`,
+          message: `El Usuario id: ${data.id}, se agrego correctamente`,
           variant: "success",
           hide: 3000,
         });
@@ -326,6 +321,14 @@ export default {
         await this.getUsers();
       } catch (error) {
         console.error(error);
+        this.toast({
+          title: error.title || "Aviso",
+          message: error?.message || "Error al cargar los productos",
+          variant: error?.variant || "danger",
+          hide: error?.time || 5000,
+        });
+        this.create.show = false;
+        this.create.item = { ...item };
       } finally {
         this.isLoading = false;
       }
@@ -333,19 +336,10 @@ export default {
     async onEdit(item) {
       try {
         this.isLoading = true;
-        const res = await services.users.update(item);
-        if (res.statusText !== "OK") {
-          this.toast({
-            title: `Problemas al editar.`,
-            message: `Problemas al editar el usuario id: ${res?.data?.id}`,
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
+        const data = await this.updateUser(item);
         this.toast({
           title: `Usuario editado correctamente`,
-          message: `El Usuario id: ${res?.data?.id}, se edito correctamente`,
+          message: `El Usuario id: ${data?.id}, se edito correctamente`,
           variant: "success",
           hide: 3000,
         });
@@ -353,6 +347,12 @@ export default {
         await this.getUsers();
       } catch (error) {
         console.error(error);
+        this.toast({
+          title: error.title || "Aviso",
+          message: error?.message || "Error al cargar los productos",
+          variant: error?.variant || "danger",
+          hide: error?.time || 5000,
+        });
       } finally {
         this.isLoading = false;
       }
@@ -360,20 +360,17 @@ export default {
     async onRemove(itemId) {
       try {
         this.isLoading = true;
-        const res = await services.users.delete(itemId);
-        if (res.statusText !== "OK") {
-          this.toast({
-            title: "Error",
-            message: "Error al cargar los usuario",
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
+        await this.removeUser(itemId);
         this.remove.show = false;
         await this.getUsers();
       } catch (error) {
         console.error(error);
+        this.toast({
+          title: error.title || "Aviso",
+          message: error?.message || "Error al cargar los productos",
+          variant: error?.variant || "danger",
+          hide: error?.time || 5000,
+        });
       } finally {
         this.isLoading = false;
       }
@@ -381,34 +378,14 @@ export default {
     async getUsers() {
       try {
         this.isLoading = true;
-        const res = await services.users.getAll();
-        if (res.statusText !== "OK") {
-          this.toast({
-            title: "Error",
-            message: "Error al cargar los usuario",
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
-        if (res.data.length === 0) {
-          this.toast({
-            title: "Error",
-            message: "Error al cargar los usuario",
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
-
-        this.users = [...res.data];
+        this.users = await this.usersList();
       } catch (error) {
         console.error(error);
         this.toast({
-          title: "Error",
-          message: JSON.stringify(error),
-          variant: "danger",
-          hide: 5000,
+          title: error.title || "Aviso",
+          message: error?.message || "Error al cargar los productos",
+          variant: error?.variant || "danger",
+          hide: error?.time || 5000,
         });
       } finally {
         this.isLoading = false;

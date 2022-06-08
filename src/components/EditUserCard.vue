@@ -10,7 +10,7 @@
         <hr />
         <v-form
           :fields="fields"
-          :values="user"
+          :values="loggedUser"
           :button="button"
           @send-form="onSendForm"
         />
@@ -21,17 +21,15 @@
 
 <script>
 import VForm from "@/components/VForm.vue";
+import { mapGetters } from "vuex";
 export default {
   name: "EditUserCard",
   components: {
     VForm,
   },
-  created() {
-    this.user = this.getSessionStorage("user");
-  },
   data() {
     return {
-      user: {},
+      user: this.loggedUser,
       button: {
         label: "Editar",
         block: true,
@@ -113,6 +111,9 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    ...mapGetters("users", ["loggedUser"]),
   },
   methods: {
     async onSendForm(user) {

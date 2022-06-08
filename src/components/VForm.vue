@@ -60,9 +60,9 @@
             :name="field.name"
             show="$touched || $submitted"
           >
-            <small class="text-success font-weight-bold">
+            <!-- <small class="text-success font-weight-bold">
               {{ field.messages.success }}
-            </small>
+            </small> -->
             <small class="text-danger font-weight-bold" slot="required">
               {{ field.messages.errors.required }}
             </small>

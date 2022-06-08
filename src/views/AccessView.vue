@@ -74,7 +74,7 @@
 <script>
 import LoginCard from "@/components/Login.vue";
 import RegisterCard from "@/components/Register.vue";
-import services from "@/services";
+import { mapActions } from "vuex";
 
 export default {
   name: "AccessView",
@@ -92,43 +92,11 @@ export default {
     };
   },
   methods: {
+    ...mapActions("users", ["login", "register"]),
     async onRegister(user) {
       try {
         this.isLoading = true;
-        const query = await services.users.getAll({
-          email: user.email,
-        });
-        // Error en consulta
-        if (query.statusText !== "OK") {
-          this.toast({
-            title: "Error",
-            message: "Error en la consulta al servidor",
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
-        // Usuario existe o ya esta registrado
-        if (query.data.length > 0) {
-          this.toast({
-            title: "Aviso",
-            message: "El usuario esta registrado",
-            variant: "warning",
-            hide: 5000,
-          });
-          return;
-        }
-        const { statusText } = await services.users.create(user);
-        // Error en consulta
-        if (statusText !== "Created") {
-          this.toast({
-            title: "Error",
-            message: "Error en la consulta al servidor",
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
+        await this.register(user);
         // Se incia sesión con usuario recien registrado
         // eslint-disable-next-line
         const { email, password } = user;
@@ -136,10 +104,10 @@ export default {
       } catch (error) {
         console.error(error);
         this.toast({
-          title: "Error",
-          message: JSON.stringify(error),
-          variant: "danger",
-          hide: 5000,
+          title: error.title || "Aviso",
+          message: error?.message || "Error al cargar los productos",
+          variant: error?.variant || "danger",
+          hide: error?.time || 5000,
         });
         return;
       } finally {
@@ -149,38 +117,7 @@ export default {
     async onLogin(user) {
       try {
         this.isLoading = true;
-        const { data, statusText } = await services.users.getAll({
-          email: user.email,
-        });
-        if (statusText !== "OK") {
-          this.toast({
-            title: "Error",
-            message: "Error en la consulta al servidor",
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
-        if (data.length === 0) {
-          this.toast({
-            title: "Aviso",
-            message: "No se encontro el usuario",
-            variant: "warning",
-            hide: 5000,
-          });
-          return;
-        }
-        if (user.password !== data[0].password) {
-          this.toast({
-            title: "Aviso",
-            message: "Clave o usuario no corresponde",
-            variant: "warning",
-            hide: 5000,
-          });
-          return;
-        }
-        // eslint-disable-next-line
-        const { password, ...userLogged } = data[0];
+        const userLogged = await this.login(user);
         this.setSessionStorage("user", userLogged);
         const cart = this.getLocalStorage("cart");
         if (cart)
@@ -189,10 +126,10 @@ export default {
       } catch (error) {
         console.error(error);
         this.toast({
-          title: "Error",
-          message: JSON.stringify(error),
-          variant: "danger",
-          hide: 5000,
+          title: error.title || "Aviso",
+          message: error?.message || "Error al cargar los productos",
+          variant: error?.variant || "danger",
+          hide: error?.time || 5000,
         });
         return;
       } finally {

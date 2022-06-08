@@ -188,6 +188,7 @@ import EditUserCard from "@/components/EditUserCard.vue";
 import CrudProducts from "@/components/CrudProducts.vue";
 import CrudUsers from "@/components/CrudUsers.vue";
 import services from "@/services";
+import { mapActions } from "vuex";
 
 export default {
   name: "AccessView",
@@ -224,66 +225,29 @@ export default {
     console.log("Orders: ", this.orders);
   },
   methods: {
+    ...mapActions("users", ["updateUser"]),
     async onEdit(user) {
       try {
         this.isLoading = true;
-        const { data, statusText } = await services.users.getAll({
-          email: user.email,
-        });
-        if (statusText !== "OK") {
-          this.toast({
-            title: "Error",
-            message: "Error en la consulta al servidor",
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
-        if (data.length === 0) {
-          this.toast({
-            message: "No se encontro el usuario",
-            variant: "warning",
-            hide: 5000,
-          });
-          return;
-        }
-        if (user.email !== data[0].email && data[0].role !== "admin") {
-          this.toast({
-            message: "No esta autorizado para este cambio",
-            variant: "warning",
-            hide: 5000,
-          });
-          return;
-        }
         // eslint-disable-next-line
-        const { password, ...userLogged } = user;
-
-        if (!password) {
-          await services.users.update(userLogged);
-          this.setSessionStorage("user", userLogged);
-        } else {
-          await services.users.update({
-            password,
-            ...userLogged,
-          });
-          this.setSessionStorage("user", userLogged);
-        }
+        const { password, ...userLogged } = await this.updateUser(user);
         this.toast({
           title: "Usuario editado",
           message: "Usuario editado correctamente",
           variant: "success",
           hide: 5000,
         });
+        this.setSessionStorage("user", { ...userLogged });
         const cart = this.getLocalStorage("cart");
         if (cart)
           this.setLocalStorage("cart", { ...cart, userId: userLogged.id });
       } catch (error) {
         console.error(error);
         this.toast({
-          title: "Error",
-          message: JSON.stringify(error),
-          variant: "danger",
-          hide: 5000,
+          title: error.title || "Aviso",
+          message: error?.message || "Error al cargar los productos",
+          variant: error?.variant || "danger",
+          hide: error?.time || 5000,
         });
         return;
       } finally {

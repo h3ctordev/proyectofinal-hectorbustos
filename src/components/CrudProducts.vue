@@ -55,6 +55,7 @@
 <script>
 import services from "@/services";
 import VForm from "@/components/VForm.vue";
+import { mapActions } from "vuex";
 
 export default {
   name: "CrudProducts",
@@ -242,6 +243,12 @@ export default {
     };
   },
   methods: {
+    ...mapActions("products", [
+      "productsList",
+      "createProduct",
+      "updateProduct",
+      "removeProduct",
+    ]),
     onModalCreate(item) {
       this.create.item = { ...item };
       this.create.show = true;
@@ -258,29 +265,25 @@ export default {
       try {
         if (item?.isTrusted) delete item.isTrusted;
         this.isLoading = true;
-        const res = await services.products.create(item);
-
-        if (res.statusText !== "Created") {
-          this.toast({
-            title: `Problemas al crear el producto`,
-            message: `El producto no se agrego correctamente`,
-            variant: "danger",
-            hide: 5000,
-          });
-          this.create.show = false;
-          this.create.item = { ...item };
-          return;
-        }
+        const data = await this.createProduct(item);
         this.toast({
           title: `Producto agregado correctamente`,
-          message: `El Producto [id: ${res.data.id}]${res.data.name}, se agrego correctamente`,
+          message: `El Producto [id: ${data?.id}]${data?.name}, se agrego correctamente`,
           variant: "success",
           hide: 3000,
         });
         this.create.show = false;
         await this.getProducts();
       } catch (error) {
+        this.create.show = false;
+        this.create.item = { ...item };
         console.error(error);
+        this.toast({
+          title: error.title || "Aviso",
+          message: error?.message || "Error al cargar los productos",
+          variant: error?.variant || "danger",
+          hide: error?.time || 5000,
+        });
       } finally {
         this.isLoading = false;
       }
@@ -315,20 +318,17 @@ export default {
     async onRemove(itemId) {
       try {
         this.isLoading = true;
-        const res = await services.products.delete(itemId);
-        if (res.statusText !== "OK") {
-          this.toast({
-            title: "Error",
-            message: "Error al cargar los productos",
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
-        this.remove.show = false;
+        await this.removeProduct(itemId);
         await this.getProducts();
       } catch (error) {
-        console.errorg(error);
+        this.remove.show = false;
+        console.error(error);
+        this.toast({
+          title: error.title || "Aviso",
+          message: error?.message || "Error al cargar los productos",
+          variant: error?.variant || "danger",
+          hide: error?.time || 5000,
+        });
       } finally {
         this.isLoading = false;
       }
@@ -336,27 +336,9 @@ export default {
     async getProducts() {
       try {
         this.isLoading = true;
-        const res = await services.products.getAll();
-        if (res.statusText !== "OK") {
-          this.toast({
-            title: "Error",
-            message: "Error al cargar los productos",
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
-        if (res.data.length === 0) {
-          this.toast({
-            title: "Error",
-            message: "Error al cargar los productos",
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
+        const data = await this.productsList();
 
-        this.products = [...res.data];
+        this.products = [...data];
       } catch (error) {
         console.error(error);
         this.toast({
