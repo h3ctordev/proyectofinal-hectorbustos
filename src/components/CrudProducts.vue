@@ -6,7 +6,13 @@
         Agregar
       </b-button>
     </b-col>
-    <b-table :busy="isLoading" striped hover :fields="fields" :items="products">
+    <b-table
+      :busy="isLoading"
+      striped
+      hover
+      :fields="fields"
+      :items="getProductList"
+    >
       <template #table-busy>
         <div class="text-center text-success my-2">
           <b-spinner class="align-middle"></b-spinner>
@@ -53,9 +59,8 @@
 </template>
 
 <script>
-import services from "@/services";
 import VForm from "@/components/VForm.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "CrudProducts",
@@ -242,6 +247,9 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapGetters("products", ["getProductList"]),
+  },
   methods: {
     ...mapActions("products", [
       "productsList",
@@ -291,27 +299,25 @@ export default {
     async onEdit(item) {
       try {
         this.isLoading = true;
-        const res = await services.products.update(item);
-        if (res.statusText !== "OK") {
-          this.toast({
-            title: `Problemas al editar.`,
-            message: `Problemas al editar el producto id: ${res?.data?.id}`,
-            variant: "danger",
-            hide: 5000,
-          });
-          return;
-        }
+        const data = await this.updateProduct(item);
         this.toast({
           title: `Producto editado correctamente`,
-          message: `El Producto id: ${res?.data?.id}, se edito correctamente`,
+          message: `El Producto id: ${data?.id}, se edito correctamente`,
           variant: "success",
           hide: 3000,
         });
-        this.edit.show = false;
         await this.getProducts();
+        this.edit.show = false;
       } catch (error) {
         console.error(error);
+        this.toast({
+          title: error.title || "Aviso",
+          message: error?.message || "Error al cargar los productos",
+          variant: error?.variant || "danger",
+          hide: error?.time || 5000,
+        });
       } finally {
+        this.edit.show = false;
         this.isLoading = false;
       }
     },

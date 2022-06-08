@@ -9,7 +9,7 @@
         </div>
       </div>
       <div v-else class="d-flex flex-wrap justify-content-center p-5 my-5">
-        <div v-for="item in products" :key="item.id">
+        <div v-for="item in getProductList" :key="item.id">
           <product-card class="m-2" :product="item" @add-cart="onAddCart" />
         </div>
       </div>
@@ -37,7 +37,7 @@ import ProductCard from "@/components/ProductCard";
 import NavBar from "@/components/NavBar";
 import CartTable from "@/components/CartTable";
 import services from "@/services";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 // // mock productos
 // import mockProducts from "@/db/products.json";
 
@@ -59,6 +59,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("products", ["getProductList"]),
     isCartEmpty() {
       if (this.cart.length) return false;
       return true;
@@ -158,7 +159,7 @@ export default {
     async getProducts() {
       try {
         this.isLoading = true;
-        this.products = await this.productsList();
+        await this.productsList();
       } catch (error) {
         console.error(error);
         this.toast({

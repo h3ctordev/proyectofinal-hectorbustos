@@ -6,8 +6,6 @@ export default {
   },
   mutations: {
     SET_PRODUCTS_LIST: (state, data) => (state.list = [...data]),
-    SET_PRODUCT_UPDATED: (state, product) =>
-      state.map((p) => (p.id === product.id ? product : p)),
   },
   actions: {
     productsList: async ({ commit }, data) => {
@@ -40,11 +38,18 @@ export default {
         throw error;
       }
     },
+    // eslint-disable-next-line
     updateProduct: async ({ commit }, product) => {
       try {
-        const res = await services.products.update(product);
-        commit("SET_PRODUCT_UPDATED", res.data);
-        return res.data;
+        const { data, statusText } = await services.products.update(product);
+        if (statusText !== "OK") {
+          throw {
+            title: `Problemas al editar.`,
+            message: `Problemas al editar el producto id: ${data?.id}`,
+            variant: "danger",
+          };
+        }
+        return data;
       } catch (error) {
         console.error(error);
         throw error;
