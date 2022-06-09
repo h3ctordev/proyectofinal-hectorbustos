@@ -2,11 +2,12 @@ import services from "@/services";
 
 export default {
   state: {
-    user: {},
+    user: null,
     list: [],
   },
   mutations: {
     SET_USER_LOGGED: (state, user) => (state.user = { ...user }),
+    SET_USER_LOGOUT: (state) => (state.user = null),
     SET_USERS_LIST: (state, users) => (state.list = [...users]),
   },
   actions: {
@@ -77,6 +78,9 @@ export default {
         throw error;
       }
     },
+    logout: ({ commit }) => {
+      commit("SET_USER_LOGOUT");
+    },
     login: async ({ commit }, user) => {
       try {
         const { data, statusText } = await services.users.getAll({
@@ -131,12 +135,14 @@ export default {
     },
   },
   getters: {
+    isLoggedIn: ({ user }) => !!user,
     loggedUser: (state) => ({ ...state.user }),
     userId: (state) => state.user.id,
     userFullName: ({ user }) =>
       `${user?.firstName || ""} ${user?.lastName || ""}`,
     userAvatar: ({ user }) => user?.avatar || null,
     userRole: ({ user }) => user?.role || null,
+    isAdmin: ({ user }) => user?.role === "admin",
   },
   namespaced: true,
 };
