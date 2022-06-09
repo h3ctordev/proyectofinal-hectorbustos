@@ -188,7 +188,7 @@ import EditUserCard from "@/components/EditUserCard.vue";
 import CrudProducts from "@/components/CrudProducts.vue";
 import CrudUsers from "@/components/CrudUsers.vue";
 import services from "@/services";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "AccessView",
@@ -224,12 +224,14 @@ export default {
     this.orders = [...res.data];
     console.log("Orders: ", this.orders);
   },
+  computed: {
+    ...mapGetters("users", ["loggedUser"]),
+  },
   methods: {
     ...mapActions("users", ["updateUser"]),
     async onEdit(user) {
       try {
         this.isLoading = true;
-        // eslint-disable-next-line
         const { password, ...userLogged } = await this.updateUser(user);
         this.toast({
           title: "Usuario editado",
@@ -252,7 +254,7 @@ export default {
         return;
       } finally {
         this.isLoading = false;
-        this.user = this.getSessionStorage("user");
+        this.user = this.loggedUser;
       }
     },
   },

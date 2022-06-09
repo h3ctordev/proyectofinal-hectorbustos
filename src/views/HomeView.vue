@@ -36,7 +36,6 @@
 import ProductCard from "@/components/ProductCard";
 import NavBar from "@/components/NavBar";
 import CartTable from "@/components/CartTable";
-import services from "@/services";
 import { mapActions, mapGetters } from "vuex";
 // // mock productos
 // import mockProducts from "@/db/products.json";
@@ -60,6 +59,7 @@ export default {
   },
   computed: {
     ...mapGetters("products", ["getProductList"]),
+    ...mapGetters("users", ["userId"]),
     isCartEmpty() {
       if (this.cart.length) return false;
       return true;
@@ -72,6 +72,7 @@ export default {
   },
   methods: {
     ...mapActions("products", ["productsList", "updateProduct"]),
+    ...mapActions("orders", ["orderCreate"]),
     onCartClean() {
       this.open = false;
       if (this.isCartEmpty) {
@@ -80,48 +81,45 @@ export default {
       this.cart = [];
       this.setLocalStorage("order", {
         cart: this.cart,
-        userId: this.getSessionStorage("user").id,
+        userId: this.userId,
       });
     },
     onAddCart(value) {
-      // NOTE: No sestoy seguro de que se deba quitar las cantidades de los items antes de ejecutar la compra
-      // this.products = this.products.map((p) =>
-      //   p.id === value.id ? { ...p, available: p.available - value.qty } : p
-      // );
-
+      // Se evalua si el producto ya existe en el carro
       if (this.cart.find((p) => p.id === value.id))
-        this.cart = this.cart.map((p) =>
-          p.id === value.id
-            ? {
-                ...p,
-                qty: p.qty + value.qty,
-                total: p.qty + value.qty * value.price,
-              }
-            : { ...p }
-        );
+        this.cart = this.cart.map((p) => {
+          // Si el producto ya existe se busca y se actualiza el precio y cantidad
+          if (p.id === value.id) {
+            // Si la cantidad es mayor de los que hay disponible, se agrega solo hasta lo que hay disponible
+            const qty =
+              +p.qty + value.qty > +value.available
+                ? +value.available
+                : +p.qty + value.qty;
+            return {
+              ...p,
+              qty: +qty,
+              total: qty * value.price,
+            };
+          }
+          return { ...p };
+        });
       else this.cart.push({ ...value, total: value.qty * value.price });
       this.setLocalStorage("order", {
         cart: this.cart,
-        userId: this.getSessionStorage("user").id,
+        userId: this.userId,
       });
     },
     async onCompleteBuyout(total) {
       try {
+        this.open = false;
+        this.isLoading = true;
         const order = this.getLocalStorage("order");
         order.total = total;
         order.date = parseInt(new Date().getTime() / 1000);
         const productsDb = await this.productsList();
         const cartOrder = [...order.cart];
-        const orderCreated = await services.orders.create(order);
-        if (orderCreated.statusText !== "Created") {
-          this.toast({
-            title: "Aviso",
-            message: "Error al ejecutar la compra",
-            variant: "warning",
-            hide: 5000,
-          });
-          return;
-        }
+        await this.orderCreate(order);
+
         // Se actualiza cantidades en
         const updateProducts = cartOrder.map((p) => {
           const product = productsDb.find((pdb) => +pdb.id === +p.id);
@@ -129,7 +127,7 @@ export default {
           return this.updateProduct(product);
         });
         await Promise.all([...updateProducts]);
-        const content = `Su compra por el monto de $${total} se completo con exito`;
+        const content = `Su compra por el monto de $${total} se completo con éxito`;
         this.cart = [];
         this.toast({
           title: "Compra Exitosa",
@@ -139,17 +137,17 @@ export default {
         });
         this.setLocalStorage("order", {
           cart: this.cart,
-          userId: this.getSessionStorage("user").id,
+          userId: this.userId,
         });
         this.open = false;
         await this.getProducts();
       } catch (error) {
         console.error(error);
         this.toast({
-          title: "Error",
-          message: "Error al ejecutar la compra",
-          variant: "warning",
-          hide: 5000,
+          title: error.title || "Aviso",
+          message: error?.message || "Error al cargar los productos",
+          variant: error?.variant || "danger",
+          hide: error?.time || 5000,
         });
       } finally {
         this.isLoading = false;

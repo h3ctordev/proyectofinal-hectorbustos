@@ -89,8 +89,6 @@ export default {
             variant: "warning",
             message: "Clave o usuario no corresponde",
           };
-
-        // eslint-disable-next-line
         const { password, ...userLogged } = data[0];
         commit("SET_USER_LOGGED", userLogged);
         return userLogged;
@@ -99,7 +97,6 @@ export default {
         throw error;
       }
     },
-    // eslint-disable-next-line
     register: async ({ commit }, user) => {
       try {
         const query = await services.users.getAll({
@@ -135,6 +132,7 @@ export default {
   },
   getters: {
     loggedUser: (state) => ({ ...state.user }),
+    userId: (state) => state.user.id,
     userFullName: ({ user }) =>
       `${user?.firstName || ""} ${user?.lastName || ""}`,
     userAvatar: ({ user }) => user?.avatar || null,

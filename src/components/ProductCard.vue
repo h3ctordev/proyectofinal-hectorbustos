@@ -24,8 +24,11 @@
         <b-form-input
           variant="outline-secondary"
           v-model="qty"
+          type="number"
           class="text-center"
           style="max-width: 3rem"
+          :max="+product.available"
+          @blur="checkQty"
         />
         <b-input-group-append>
           <b-button
@@ -51,7 +54,6 @@
 </template>
 
 <script>
-/* eslint-disable */
 export default {
   name: "ProductCard",
   props: {
@@ -76,9 +78,7 @@ export default {
   },
   methods: {
     addCart(product) {
-      const { available, ...productProps } = product;
-
-      const item = { ...productProps, qty: this.qty };
+      const item = { ...product, qty: this.qty };
       this.$emit("add-cart", item);
     },
     addQty(available) {
@@ -89,6 +89,24 @@ export default {
       if (this.qty === 1) return;
       this.qty -= 1;
     },
+    checkQty() {
+      if (+this.qty > +this.product.available) {
+        this.qty = +this.product.available;
+      }
+    },
   },
 };
 </script>
+<style scoped>
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+</style>

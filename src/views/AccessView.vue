@@ -98,7 +98,6 @@ export default {
         this.isLoading = true;
         await this.register(user);
         // Se incia sesión con usuario recien registrado
-        // eslint-disable-next-line
         const { email, password } = user;
         this.onLogin({ email, password });
       } catch (error) {

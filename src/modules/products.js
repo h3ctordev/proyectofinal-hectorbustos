@@ -22,7 +22,6 @@ export default {
         throw error;
       }
     },
-    // eslint-disable-next-line
     createProduct: async (context, product) => {
       try {
         const res = await services.products.create(product);
@@ -38,7 +37,6 @@ export default {
         throw error;
       }
     },
-    // eslint-disable-next-line
     updateProduct: async ({ commit }, product) => {
       try {
         const { data, statusText } = await services.products.update(product);
@@ -55,7 +53,6 @@ export default {
         throw error;
       }
     },
-    // eslint-disable-next-line
     removeProduct: async (context, id) => {
       try {
         const res = await services.products.delete(id);

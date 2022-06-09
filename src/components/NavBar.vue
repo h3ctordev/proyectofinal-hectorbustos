@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "NavBar",
   props: {
@@ -39,7 +40,7 @@ export default {
   },
   data() {
     return {
-      user: this.getSessionStorage("user"),
+      user: this.loggedUser,
     };
   },
   methods: {
@@ -55,6 +56,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("users", ["loggedUser"]),
     countItems() {
       return this.cart.reduce((sum, a) => (sum += a.qty), 0);
     },
