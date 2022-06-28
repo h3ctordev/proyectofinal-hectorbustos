@@ -136,7 +136,7 @@ export default {
     },
   },
   getters: {
-    isLoggedIn: ({ user }) => !!user,
+    isLoggedIn: ({ user }) => (user && user.id ? true : false),
     loggedUser: (state) => ({ ...state.user }),
     userId: (state) => state.user.id,
     userFullName: ({ user }) =>
