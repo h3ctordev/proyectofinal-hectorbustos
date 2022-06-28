@@ -96,7 +96,7 @@
         :pill="button.pill"
         type="submit"
       >
-        {{ button.label || "Enviar" }}
+        {{ button.label || 'Enviar' }}
       </b-button>
     </div>
   </vue-form>
@@ -104,7 +104,7 @@
 
 <script>
 export default {
-  name: "VForm",
+  name: 'VForm',
   props: {
     fields: {
       type: Array,
@@ -129,7 +129,7 @@ export default {
     onSubmit() {
       if (this.formstate.$valid) {
         this.formstate._reset();
-        this.$emit("send-form", this.models);
+        this.$emit('send-form', this.models);
         this.models = { ...this.values };
       }
     },
@@ -138,10 +138,10 @@ export default {
         return null;
       }
       if ((field.$touched || field.$submitted) && field.$valid) {
-        return "is-valid";
+        return '';
       }
       if ((field.$touched || field.$submitted) && field.$invalid) {
-        return "is-invalid";
+        return 'is-invalid';
       }
     },
   },

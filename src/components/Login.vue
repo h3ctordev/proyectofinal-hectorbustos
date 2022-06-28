@@ -15,47 +15,43 @@
 </template>
 
 <script>
-import VForm from "@/components/VForm.vue";
+import VForm from '@/components/VForm.vue';
 export default {
-  name: "LoginCard",
+  name: 'LoginCard',
   components: {
     VForm,
   },
   data() {
     return {
       user: {
-        email: "",
-        password: "",
+        email: '',
+        password: '',
       },
       button: {
-        label: "Ingresar",
+        label: 'Ingresar',
         block: true,
         pill: true,
-        class: "px-5 my-3",
-        variant: "success",
+        class: 'px-5 my-3',
+        variant: 'success',
       },
       fields: [
         {
-          key: "email",
-          label: "Email",
+          key: 'email',
+          label: 'Email',
           required: true,
-          type: "email",
+          type: 'email',
           messages: {
             errors: {},
           },
         },
         {
-          key: "password",
-          label: "Clave",
+          key: 'password',
+          label: 'Clave',
           required: true,
-          type: "password",
+          type: 'password',
           minlength: 8,
           messages: {
-            success: "Correcto!",
-            errors: {
-              required: "La clave es requerida",
-              minlength: "La clave debe teenr almenos 8 caracteres",
-            },
+            errors: {},
           },
         },
       ],
@@ -63,7 +59,7 @@ export default {
   },
   methods: {
     async onSendForm(user) {
-      this.$emit("send-login", user);
+      this.$emit('send-login', user);
     },
   },
 };

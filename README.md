@@ -2,10 +2,10 @@
 
 ### Usuarios de Prueba
 
-| Usuarios   | Rol           | Email                  | Password   |
-| ---------- | ------------- | ---------------------- | ---------- |
-| administra | Administrador | administrador@email.cl | 1234567890 |
-| Cliente    | Cliente       | cliente@email.cl       | 1234567890 |
+| Usuarios      | Rol           | Email                  | Password   |
+| ------------- | ------------- | ---------------------- | ---------- |
+| Administrador | Administrador | administrador@email.cl | 1234567890 |
+| Cliente       | Cliente       | cliente@email.cl       | 1234567890 |
 
 ## Entregas
 

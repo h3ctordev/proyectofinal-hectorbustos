@@ -122,7 +122,7 @@
           role="tabpanel"
         >
           <b-card-body>
-            <edit-user-card @send-edit="onEdit" />
+            <edit-user-card @send-edit="onEdit" :user="user" />
           </b-card-body>
         </b-collapse>
       </b-card>
@@ -184,14 +184,14 @@
 </template>
 
 <script>
-import EditUserCard from "@/components/EditUserCard.vue";
-import CrudProducts from "@/components/CrudProducts.vue";
-import CrudUsers from "@/components/CrudUsers.vue";
-import services from "@/services";
-import { mapActions, mapGetters } from "vuex";
+import EditUserCard from '@/components/EditUserCard.vue';
+import CrudProducts from '@/components/CrudProducts.vue';
+import CrudUsers from '@/components/CrudUsers.vue';
+import services from '@/services';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
-  name: "AccessView",
+  name: 'AccessView',
   components: {
     EditUserCard,
     CrudProducts,
@@ -208,53 +208,54 @@ export default {
       user: {},
       orders: [],
       fieldsOrdersCart: [
-        { label: "Imagen", key: "img" },
-        { label: "Nombre", key: "name", sortable: true },
-        { label: "Precio", key: "price", sortable: true },
-        { label: "Cantidad", key: "qty", sortable: true },
-        { label: "Descripción", key: "description" },
-        { label: "Total", key: "tot" },
+        { label: 'Imagen', key: 'img' },
+        { label: 'Nombre', key: 'name', sortable: true },
+        { label: 'Precio', key: 'price', sortable: true },
+        { label: 'Cantidad', key: 'qty', sortable: true },
+        { label: 'Descripción', key: 'description' },
+        { label: 'Total', key: 'tot' },
       ],
       isLoading: false,
     };
   },
   async created() {
-    this.user = this.getSessionStorage("user");
+    this.user = this.getSessionStorage('user');
     const res = await services.orders.getAll(this.user.id);
     this.orders = [...res.data];
-    console.log("Orders: ", this.orders);
   },
   computed: {
-    ...mapGetters("users", ["loggedUser"]),
+    ...mapGetters('users', ['loggedUser']),
   },
   methods: {
-    ...mapActions("users", ["updateUser"]),
+    ...mapActions('users', ['updateUser']),
     async onEdit(user) {
       try {
         this.isLoading = true;
         const { password, ...userLogged } = await this.updateUser(user);
+        console.log(userLogged);
         this.toast({
-          title: "Usuario editado",
-          message: "Usuario editado correctamente",
-          variant: "success",
+          title: 'Usuario editado',
+          message: 'Usuario editado correctamente',
+          variant: 'success',
           hide: 5000,
         });
-        this.setSessionStorage("user", { ...userLogged });
-        const cart = this.getLocalStorage("cart");
+        this.user = { ...userLogged };
+        this.setSessionStorage('user', { ...userLogged });
+        const cart = this.getLocalStorage('cart');
         if (cart)
-          this.setLocalStorage("cart", { ...cart, userId: userLogged.id });
+          this.setLocalStorage('cart', { ...cart, userId: userLogged.id });
       } catch (error) {
         console.error(error);
+        this.user = { ...this.loggedUser };
         this.toast({
-          title: error.title || "Aviso",
-          message: error?.message || "Error al cargar los productos",
-          variant: error?.variant || "danger",
+          title: error.title || 'Aviso',
+          message: error?.message || 'Error al cargar los productos',
+          variant: error?.variant || 'danger',
           hide: error?.time || 5000,
         });
         return;
       } finally {
         this.isLoading = false;
-        this.user = this.loggedUser;
       }
     },
   },

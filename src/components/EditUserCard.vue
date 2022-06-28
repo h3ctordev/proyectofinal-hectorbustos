@@ -10,7 +10,7 @@
         <hr />
         <v-form
           :fields="fields"
-          :values="loggedUser"
+          :values="user"
           :button="button"
           @send-form="onSendForm"
         />
@@ -20,92 +20,98 @@
 </template>
 
 <script>
-import VForm from "@/components/VForm.vue";
-import { mapGetters } from "vuex";
+import VForm from '@/components/VForm.vue';
+import { mapGetters } from 'vuex';
 export default {
-  name: "EditUserCard",
+  name: 'EditUserCard',
   components: {
     VForm,
   },
+  props: {
+    user: {
+      type: Object,
+      default: () => {},
+    },
+  },
   data() {
     return {
-      user: this.loggedUser,
+      // user: null,
       button: {
-        label: "Editar",
+        label: 'Editar',
         block: true,
         pill: true,
-        class: "px-5 my-3",
-        variant: "success",
+        class: 'px-5 my-3',
+        variant: 'success',
       },
       fields: [
         {
-          key: "id",
-          label: "ID",
+          key: 'id',
+          label: 'ID',
           required: true,
           disable: true,
           messages: {
-            success: "",
+            success: '',
             errors: {},
           },
         },
         {
-          key: "email",
-          label: "Email",
+          key: 'email',
+          label: 'Email',
           required: true,
-          type: "email",
+          type: 'email',
           messages: {
-            success: "Correcto!",
+            success: 'Correcto!',
             errors: {
-              required: "El Mail es requerido",
-              email: "El Mail no es valido",
+              required: 'El Mail es requerido',
+              email: 'El Mail no es valido',
             },
           },
         },
         {
-          key: "firstName",
-          label: "Nombre",
-          required: true,
-          minlength: 3,
-          messages: {
-            success: "Correcto!",
-            errors: {
-              required: "El Nombre es requerido",
-              minlength: "Debe tener al menos 3 caracteres.",
-            },
-          },
-        },
-        {
-          key: "lastName",
-          label: "Apellido",
+          key: 'firstName',
+          label: 'Nombre',
           required: true,
           minlength: 3,
           messages: {
-            success: "Correcto!",
+            success: 'Correcto!',
             errors: {
-              required: "El Apellido es requerido",
-              minlength: "Debe tener al menos 3 caracteres.",
+              required: 'El Nombre es requerido',
+              minlength: 'Debe tener al menos 3 caracteres.',
             },
           },
         },
         {
-          key: "avatar",
-          label: "Avatar",
+          key: 'lastName',
+          label: 'Apellido',
+          required: true,
+          minlength: 3,
+          messages: {
+            success: 'Correcto!',
+            errors: {
+              required: 'El Apellido es requerido',
+              minlength: 'Debe tener al menos 3 caracteres.',
+            },
+          },
+        },
+        {
+          key: 'avatar',
+          label: 'Avatar',
           minlength: 6,
           messages: {
-            success: "Correcto!",
+            success: 'Correcto!',
             errors: {
-              minlength: "Debe tener al menos 6 caracteres.",
+              minlength: 'Debe tener al menos 6 caracteres.',
             },
           },
         },
         {
-          key: "password",
-          label: "Clave Nueva",
-          type: "password",
+          key: 'password',
+          label: 'Clave Nueva',
+          type: 'password',
           minlength: 8,
           messages: {
             errors: {
-              minlength: "Debe tener al menos 8 caracteres.",
+              minlength: 'Debe tener al menos 8 caracteres.',
             },
           },
         },
@@ -113,11 +119,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("users", ["loggedUser"]),
+    ...mapGetters('users', ['loggedUser']),
   },
   methods: {
-    async onSendForm(user) {
-      this.$emit("send-edit", user);
+    onSendForm(user) {
+      this.$emit('send-edit', user);
     },
   },
 };
